@@ -14,27 +14,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 
-class MainActivity : AppCompatActivity() , TaskListAdapter.TodoListClickListener {
+class MainActivity : AppCompatActivity() , TaskListFragment.OnFragmentInteractionListener {
+    private var taskListFragment : TaskListFragment = TaskListFragment.newInstance()
 
     companion object {
         const val INTENT_LIST_KEY = "taskList"
         const val LIST_DETAIL_REQUEST_CODE = 10
     }
-    private lateinit var todoListRecyclerView : RecyclerView
-
-    val listDataManager = ListDataManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        todoListRecyclerView = findViewById(R.id.todo_list_recycler_view)
-        todoListRecyclerView.layoutManager = LinearLayoutManager(this)
-        todoListRecyclerView.adapter = TaskListAdapter(listDataManager.readList(),this)
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             showCreateListDialog(view)
         }
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.task_list_fragment, taskListFragment)
+            .commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -58,15 +57,9 @@ class MainActivity : AppCompatActivity() , TaskListAdapter.TodoListClickListener
         if (requestCode == LIST_DETAIL_REQUEST_CODE) {
             data?.let {
                 val list = data.getParcelableExtra<TaskList>(INTENT_LIST_KEY)!!
-                listDataManager.saveList(list)
-                updateList()
+                taskListFragment.saveList(list)
             }
         }
-    }
-
-    private fun updateList() {
-        val lists = listDataManager.readList()
-        todoListRecyclerView.adapter = TaskListAdapter(lists, this)
     }
 
     private fun showCreateListDialog(view: View) {
@@ -79,14 +72,12 @@ class MainActivity : AppCompatActivity() , TaskListAdapter.TodoListClickListener
         todoDialog.setView(todoTextInput)
         todoDialog.setPositiveButton(positiveButtonLabel) {
             dialog, _ ->
-                val adapter = todoListRecyclerView.adapter  as TaskListAdapter
                 if (todoTextInput.text.toString().isBlank()) {
                     dialog.dismiss()
                     Snackbar.make(view, "Need that list name.", Snackbar.LENGTH_SHORT).show()
                 } else {
                     val list = TaskList(todoTextInput.text.toString())
-                    listDataManager.saveList(list)
-                    adapter.addList(list)
+                    taskListFragment.addList(list)
                     dialog.dismiss()
                     showTaskListItems(list);
                 }
@@ -101,7 +92,7 @@ class MainActivity : AppCompatActivity() , TaskListAdapter.TodoListClickListener
         startActivityForResult(taskListItem, LIST_DETAIL_REQUEST_CODE)
     }
 
-    override fun itemClicked(list: TaskList) {
+    override fun onItemClicked(list: TaskList) {
         showTaskListItems(list)
     }
 }
