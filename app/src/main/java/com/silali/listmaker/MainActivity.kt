@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             val adapter = todoListRecyclerView.adapter as TodoListAdapter
             adapter.addNewItem()
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
