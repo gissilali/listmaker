@@ -21,10 +21,10 @@ class MainActivity : AppCompatActivity() {
 
         todoListRecyclerView = findViewById(R.id.todo_list_recycler_view)
         todoListRecyclerView.layoutManager = LinearLayoutManager(this)
-        todoListRecyclerView.adapter = TodoListAdapter(todoList)
+        todoListRecyclerView.adapter = TodoListAdapter()
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            val adapter = todoListRecyclerView.adapter as TodoListAdapter
+            adapter.addNewItem()
         }
     }
 
