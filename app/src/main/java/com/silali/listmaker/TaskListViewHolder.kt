@@ -4,9 +4,9 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class TodoListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class TaskListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(item : String) {
-        val textView = itemView.findViewById<TextView>(R.id.todo_text)
+        val textView = itemView.findViewById<TextView>(R.id.list_item_title)
         textView.text = item
     }
 }

@@ -1,20 +1,27 @@
 package com.silali.listmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() , TaskListAdapter.TodoListClickListener {
 
-    lateinit var todoListRecyclerView : RecyclerView
-    private val todoList = arrayOf("Android Development", "House Work", "Errands")
+    companion object {
+        const val INTENT_LIST_KEY = "taskList"
+        const val LIST_DETAIL_REQUEST_CODE = 10
+    }
+    private lateinit var todoListRecyclerView : RecyclerView
+
     val listDataManager = ListDataManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,9 +31,9 @@ class MainActivity : AppCompatActivity() {
 
         todoListRecyclerView = findViewById(R.id.todo_list_recycler_view)
         todoListRecyclerView.layoutManager = LinearLayoutManager(this)
-        todoListRecyclerView.adapter = TodoListAdapter(listDataManager.readList())
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { _ ->
-            showCreateListDialog()
+        todoListRecyclerView.adapter = TaskListAdapter(listDataManager.readList(),this)
+        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
+            showCreateListDialog(view)
         }
     }
 
@@ -46,7 +53,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showCreateListDialog() {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == LIST_DETAIL_REQUEST_CODE) {
+            data?.let {
+                val list = data.getParcelableExtra<TaskList>(INTENT_LIST_KEY)!!
+                listDataManager.saveList(list)
+                updateList()
+            }
+        }
+    }
+
+    private fun updateList() {
+        val lists = listDataManager.readList()
+        todoListRecyclerView.adapter = TaskListAdapter(lists, this)
+    }
+
+    private fun showCreateListDialog(view: View) {
         val dialogTitle = getString(R.string.todo_dialog_title)
         val positiveButtonLabel = getString(R.string.positive_button_label)
         val todoDialog = AlertDialog.Builder(this)
@@ -56,13 +79,29 @@ class MainActivity : AppCompatActivity() {
         todoDialog.setView(todoTextInput)
         todoDialog.setPositiveButton(positiveButtonLabel) {
             dialog, _ ->
-                val adapter = todoListRecyclerView.adapter  as TodoListAdapter
-            val list = TaskList(todoTextInput.text.toString())
-                listDataManager.saveList(list)
-                adapter.addList(list)
-                dialog.dismiss()
+                val adapter = todoListRecyclerView.adapter  as TaskListAdapter
+                if (todoTextInput.text.toString().isBlank()) {
+                    dialog.dismiss()
+                    Snackbar.make(view, "Need that list name.", Snackbar.LENGTH_SHORT).show()
+                } else {
+                    val list = TaskList(todoTextInput.text.toString())
+                    listDataManager.saveList(list)
+                    adapter.addList(list)
+                    dialog.dismiss()
+                    showTaskListItems(list);
+                }
         }
 
         todoDialog.create().show()
+    }
+
+    private fun showTaskListItems(list: TaskList) {
+        val taskListItem = Intent(this, DetailActivity::class.java)
+        taskListItem.putExtra(INTENT_LIST_KEY, list)
+        startActivityForResult(taskListItem, LIST_DETAIL_REQUEST_CODE)
+    }
+
+    override fun itemClicked(list: TaskList) {
+        showTaskListItems(list)
     }
 }
