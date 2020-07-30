@@ -1,9 +1,13 @@
 package com.silali.listmaker
 
+import android.app.Application
 import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import androidx.preference.PreferenceManager
 
-class ListDataManager(private val context: Context) {
+class ListDataManager(application: Application) : AndroidViewModel(application) {
+    private val context = application.applicationContext
+
     fun saveList(list: TaskList) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context).edit()
         sharedPreferences.putStringSet(list.name, list.tasks.toHashSet())

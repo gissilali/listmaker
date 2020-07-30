@@ -1,20 +1,26 @@
 package com.silali.listmaker
 
-import android.content.Context
 import android.os.Bundle
+import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_task_list.*
 
 
-class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener {
-    var listener : OnFragmentInteractionListener? = null
-
+class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener, ItemInputBottomSheetDialog.BottomSheetDialogClickListener {
     private lateinit var todoListRecyclerView : RecyclerView
     private lateinit var listDataManager : ListDataManager
+    private lateinit var currentView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,15 +37,25 @@ class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         todoListRecyclerView = view.findViewById(R.id.todo_list_recycler_view)
-        todoListRecyclerView.layoutManager = LinearLayoutManager(activity)
+        activity?.let {
+            todoListRecyclerView.layoutManager = LinearLayoutManager(it)
+        }
+        activity?.let {
+            listDataManager = ViewModelProviders.of(this).get(ListDataManager::class.java)
+        }
+
         todoListRecyclerView.adapter = TaskListAdapter(listDataManager.readList(),this)
+        currentView = view
+        fab.setOnClickListener { view ->
+            showCreateListDialog(view)
+        }
+
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            listener = context
-            listDataManager = ListDataManager(context)
+    private fun showCreateListDialog(view: View) {
+        parentFragmentManager?.let {
+            val bottomSheetDialog = ItemInputBottomSheetDialog(this)
+            bottomSheetDialog.show(it, "TAG")
         }
     }
 
@@ -53,12 +69,8 @@ class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener {
             }
     }
 
-    interface OnFragmentInteractionListener {
-        fun onItemClicked(list: TaskList)
-    }
-
     override fun itemClicked(list: TaskList) {
-        listener?.onItemClicked(list)
+        showTaskListItems(list)
     }
 
     fun addList(list: TaskList) {
@@ -75,5 +87,24 @@ class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener {
     private fun updateList() {
         val lists = listDataManager.readList()
         todoListRecyclerView.adapter = TaskListAdapter(lists, this)
+    }
+
+    private fun showTaskListItems(list: TaskList) {
+        val action = TaskListFragmentDirections.actionTaskListFragmentToDetailFragment(list.name)
+        findNavController().navigate(action)
+    }
+
+    override fun submitForm(view: View, dialog: ItemInputBottomSheetDialog) {
+        val textInput = view.findViewById<EditText>(R.id.text_input)
+        val taskName = textInput.text.toString();
+        if (taskName.isBlank()) {
+            Snackbar.make(currentView, "Need that list name.", Snackbar.LENGTH_SHORT).show()
+            dialog.dismiss()
+        } else {
+            val list = TaskList(taskName)
+            addList(list)
+            showTaskListItems(list);
+            dialog.dismiss()
+        }
     }
 }
