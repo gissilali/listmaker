@@ -1,8 +1,10 @@
-package com.silali.listmaker
+package com.silali.listmaker.ui.tasklist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.silali.listmaker.R
+import com.silali.listmaker.TaskList
 
 class TaskAdapter(private val taskList: TaskList) : RecyclerView.Adapter<TaskViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {

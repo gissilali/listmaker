@@ -6,7 +6,7 @@
     app:startDestination="@id/taskListFragment">
     <fragment
         android:id="@+id/taskListFragment"
-        android:name="com.silali.listmaker.TaskListFragment"
+        android:name="com.silali.listmaker.ui.tasklist.TaskListFragment"
         android:label="TaskListFragment" >
         <action
             android:id="@+id/action_taskListFragment_to_detailFragment"
@@ -14,7 +14,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.silali.listmaker.DetailFragment"
+        android:name="com.silali.listmaker.ui.tasklist.DetailFragment"
         android:label="DetailFragment" >
         <argument
             android:name="list_string"

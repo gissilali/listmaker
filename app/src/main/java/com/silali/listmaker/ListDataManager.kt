@@ -1,7 +1,6 @@
 package com.silali.listmaker
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.preference.PreferenceManager
 
@@ -20,7 +19,10 @@ class ListDataManager(application: Application) : AndroidViewModel(application) 
         val taskLists = ArrayList<TaskList>()
         for (taskList in contents) {
             val taskItems = ArrayList(taskList.value as HashSet<String>)
-            val list = TaskList(taskList.key, taskItems)
+            val list = TaskList(
+                taskList.key,
+                taskItems
+            )
             taskLists.add(list)
         }
 

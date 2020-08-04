@@ -1,4 +1,4 @@
-package com.silali.listmaker
+package com.silali.listmaker.ui.tasklist
 
 import android.os.Bundle
 import android.text.InputType
@@ -14,13 +14,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.silali.listmaker.ListDataManager
+import com.silali.listmaker.R
+import com.silali.listmaker.TaskList
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_detail.*
 
 class DetailFragment : Fragment() {
     private lateinit var taskList: TaskList
     private lateinit var todoListRecyclerView : RecyclerView
-    lateinit var listDataManager: ListDataManager
+    private lateinit var listDataManager: ListDataManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +48,8 @@ class DetailFragment : Fragment() {
             todoListRecyclerView = view.findViewById(R.id.task_detail_recycler_view)
             todoListRecyclerView.layoutManager = LinearLayoutManager(it)
             it.toolbar?.title = taskList.name
-            todoListRecyclerView.adapter = TaskAdapter(taskList)
+            todoListRecyclerView.adapter =
+                TaskAdapter(taskList)
             task_fab.setOnClickListener {
                     view ->
                 showAddTaskDialog(view)
@@ -63,14 +67,6 @@ class DetailFragment : Fragment() {
     }
 
     companion object {
-        private const val ARG_LIST = "list"
-        fun newInstance(list: TaskList): DetailFragment {
-            val bundle : Bundle = Bundle()
-            bundle.putParcelable(ARG_LIST, list)
-            val fragment = DetailFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
     }
 
     private fun showAddTaskDialog(view: View) {

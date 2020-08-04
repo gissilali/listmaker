@@ -6,12 +6,12 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <fragment
         android:id="@+id/task_list_fragment"
-        class="com.silali.listmaker.TaskListFragment"
+        class="com.silali.listmaker.ui.tasklist.TaskListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <fragment
         android:id="@+id/task_detail_fragment"
-        class="com.silali.listmaker.DetailFragment"
+        class="com.silali.listmaker.ui.tasklist.DetailFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

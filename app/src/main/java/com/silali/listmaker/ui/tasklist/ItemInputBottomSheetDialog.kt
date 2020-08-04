@@ -1,4 +1,4 @@
-package com.silali.listmaker
+package com.silali.listmaker.ui.tasklist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,16 +8,20 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.silali.listmaker.R
+
 
 class ItemInputBottomSheetDialog(private val clickListener: BottomSheetDialogClickListener) : RoundedBottomSheetDialogFragment() {
+
     interface BottomSheetDialogClickListener {
         fun submitForm(taskName: View, dialog: ItemInputBottomSheetDialog)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        setStyle(DialogFragment.STYLE_NORMAL,
+            R.style.DialogStyle
+        )
     }
 
     override fun onCreateView(

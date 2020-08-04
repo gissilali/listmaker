@@ -1,10 +1,12 @@
-package com.silali.listmaker
+package com.silali.listmaker.ui.tasklist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.silali.listmaker.R
+import com.silali.listmaker.TaskList
 
-class TaskListAdapter(private val todoLists: ArrayList<TaskList>, val clickListener: TodoListClickListener) : RecyclerView.Adapter<TaskListViewHolder>() {
+class TaskListAdapter(private val todoLists: ArrayList<TaskList>, private val clickListener: TodoListClickListener) : RecyclerView.Adapter<TaskListViewHolder>() {
     interface TodoListClickListener {
         fun itemClicked(list: TaskList)
     }
@@ -15,17 +17,12 @@ class TaskListAdapter(private val todoLists: ArrayList<TaskList>, val clickListe
         return TaskListViewHolder(view)
     }
 
-    fun addList(list: TaskList) {
-        todoLists.add(list)
-        notifyDataSetChanged()
-    }
-
     override fun getItemCount(): Int {
         return todoLists.size
     }
 
     override fun onBindViewHolder(holder: TaskListViewHolder, position: Int) {
-        val currentListItem = todoLists[position];
+        val currentListItem = todoLists[position]
         holder.bind(currentListItem.name)
         holder.itemView.setOnClickListener {
             clickListener.itemClicked(currentListItem)

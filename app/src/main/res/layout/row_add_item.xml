@@ -1,33 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditText
-        android:id="@+id/text_input"
-        android:hint="@string/new_task_input_label"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="taskListViewModel"
+            type="com.silali.listmaker.data.viewmodel.TaskListViewModel" />
+    </data>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:autofillHints="" />
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:textSize="16dp"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/save_btn"
-            android:layout_width="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/list_title_input"
+            android:text="@={taskListViewModel.listTitle}"
+            android:hint="@string/new_task_input_label"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/save_btn_label"
-            android:textColor="@color/primaryColor"
-            android:textFontWeight="@android:integer/config_longAnimTime"
-            ></Button>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+            android:inputType="text"
+            android:autofillHints="" />
+        <EditText
+            android:id="@+id/list_description_input"
+            android:text="@={taskListViewModel.listTitle}"
+            android:hint="@string/new_task_input_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:autofillHints="" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:onClick="@{() -> taskListViewModel.saveOrUpdate()}"
+                android:textSize="16dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:id="@+id/save_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save_btn_label"
+                android:textColor="@color/primaryColor"
+                android:textFontWeight="@android:integer/config_longAnimTime"
+                ></Button>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</layout>
