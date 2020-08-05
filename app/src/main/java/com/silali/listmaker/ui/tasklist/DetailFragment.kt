@@ -9,25 +9,16 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.silali.listmaker.ListDataManager
 import com.silali.listmaker.R
-import com.silali.listmaker.TaskList
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_detail.*
 
 class DetailFragment : Fragment() {
-    private lateinit var taskList: TaskList
     private lateinit var todoListRecyclerView : RecyclerView
-    private lateinit var listDataManager: ListDataManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        taskList = TaskList("name", ArrayList())
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().popBackStack()
@@ -37,23 +28,21 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listDataManager = ViewModelProviders.of(this).get(ListDataManager::class.java)
 
         arguments?.let {
             val args = DetailFragmentArgs.fromBundle(it)
-            taskList = listDataManager.readList().filter { list -> list.name == args.listString  }[0]
         }
 
         activity?.let {
-            todoListRecyclerView = view.findViewById(R.id.task_detail_recycler_view)
-            todoListRecyclerView.layoutManager = LinearLayoutManager(it)
-            it.toolbar?.title = taskList.name
-            todoListRecyclerView.adapter =
-                TaskAdapter(taskList)
-            task_fab.setOnClickListener {
-                    view ->
-                showAddTaskDialog(view)
-            }
+//            todoListRecyclerView = view.findViewById(R.id.task_detail_recycler_view)
+//            todoListRecyclerView.layoutManager = LinearLayoutManager(it)
+//            it.toolbar?.title = taskList.name
+//            todoListRecyclerView.adapter =
+//                TaskAdapter(taskList)
+//            task_fab.setOnClickListener {
+//                    view ->
+//                showAddTaskDialog(view)
+//            }
         }
 
     }
@@ -85,8 +74,8 @@ class DetailFragment : Fragment() {
                     dialog.dismiss()
                     Snackbar.make(view, "Need that list name.", Snackbar.LENGTH_SHORT).show()
                 } else {
-                    taskList.tasks.add(todoTextInput.text.toString())
-                    listDataManager.saveList(taskList)
+//                    taskList.tasks.add(todoTextInput.text.toString())
+//                    listDataManager.saveList(taskList)
                     dialog.dismiss()
                 }
             }

@@ -10,12 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.silali.listmaker.ListDataManager
 import com.silali.listmaker.R
-import com.silali.listmaker.TaskList
 import com.silali.listmaker.data.TaskListDatabase
+import com.silali.listmaker.data.model.TaskList
 import com.silali.listmaker.data.repository.TaskListRepository
 import com.silali.listmaker.data.viewmodel.TaskListViewModel
 import com.silali.listmaker.data.viewmodel.TaskListViewModelFactory
@@ -25,8 +24,6 @@ import kotlinx.android.synthetic.main.fragment_task_list.*
 
 class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener,
     ItemInputBottomSheetDialog.BottomSheetDialogClickListener {
-    private lateinit var todoListRecyclerView: RecyclerView
-    private lateinit var listDataManager: ListDataManager
     private lateinit var currentView: View
     private var binding: FragmentTaskListBinding? = null
     private lateinit var taskListViewModel : TaskListViewModel
@@ -35,7 +32,8 @@ class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_task_list, container, false)
+        binding = FragmentTaskListBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,12 +41,13 @@ class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener,
         val dao = TaskListDatabase.getInstance(requireContext())!!.taskListDao
         val repository = TaskListRepository(dao)
         val factory = TaskListViewModelFactory(repository)
+
         taskListViewModel = ViewModelProvider(this, factory).get(TaskListViewModel::class.java)
         currentView = view
         fab.setOnClickListener { view ->
             showCreateListDialog(view)
         }
-        displayTaskLists(view)
+        initRecyclerView()
     }
 
     private fun showCreateListDialog(view: View) {
@@ -63,18 +62,13 @@ class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener,
         binding = null
     }
 
-    private fun displayTaskLists(view: View) {
+    private fun initRecyclerView() {
+        binding!!.todoListRecyclerView!!.layoutManager = LinearLayoutManager(context)
+        displayTaskLists()
+    }
+    private fun displayTaskLists() {
         taskListViewModel.taskLists.observe(viewLifecycleOwner, Observer {
-//            todoListRecyclerView = view.findViewById(R.id.todo_list_recycler_view)
-//            activity?.let {
-//                todoListRecyclerView.layoutManager = LinearLayoutManager(it)
-//            }
-//
-//            todoListRecyclerView.adapter =
-//                TaskListAdapter(
-//                    listDataManager.readList(),
-//                    this
-//                )
+            binding?.todoListRecyclerView?.adapter = TaskListAdapter(it, this)
             Log.i("TASKS", it.toString())
         })
     }
@@ -86,7 +80,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener,
     }
 
     private fun showTaskListItems(list: TaskList) {
-        val action = TaskListFragmentDirections.actionTaskListFragmentToDetailFragment(list.name)
+        val action = TaskListFragmentDirections.actionTaskListFragmentToDetailFragment(list.title)
         findNavController().navigate(action)
     }
 
