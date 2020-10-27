@@ -2,6 +2,7 @@ package com.silali.listmaker.data.viewmodel
 
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,8 @@ import kotlinx.coroutines.launch
 
 class TaskListViewModel(private val taskListRepository: TaskListRepository) : ViewModel(), Observable {
     val taskLists = taskListRepository.taskLists
+
+    lateinit var currentTaskList: LiveData<TaskList>
 
     @Bindable
     val listTitle = MutableLiveData<String>()
@@ -27,6 +30,10 @@ class TaskListViewModel(private val taskListRepository: TaskListRepository) : Vi
 
     fun add(taskList: TaskList) = viewModelScope.launch {
         taskListRepository.addTaskList(taskList)
+    }
+
+    fun getList(listId: Int) = viewModelScope.launch{
+        currentTaskList = taskListRepository.getTaskList(listId)
     }
 
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {

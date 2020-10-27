@@ -9,16 +9,34 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.silali.listmaker.R
+import com.silali.listmaker.data.TaskListDatabase
+import com.silali.listmaker.data.model.TaskList
+import com.silali.listmaker.data.repository.TaskListRepository
+import com.silali.listmaker.data.viewmodel.TaskListViewModel
+import com.silali.listmaker.data.viewmodel.TaskListViewModelFactory
+import kotlinx.android.synthetic.main.activity_main.*
 
 class DetailFragment : Fragment() {
     private lateinit var todoListRecyclerView : RecyclerView
+    private lateinit var taskListViewModel : TaskListViewModel
+    private lateinit var repository: TaskListRepository
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val dao = TaskListDatabase.getInstance(requireContext())!!.taskListDao
+        repository = TaskListRepository(dao)
+
+        val factory = TaskListViewModelFactory(repository)
+
+        taskListViewModel = ViewModelProvider(this, factory).get(TaskListViewModel::class.java)
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().popBackStack()
@@ -27,23 +45,19 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-        arguments?.let {
-            val args = DetailFragmentArgs.fromBundle(it)
+        arguments?.let {bundle ->
+            val args = DetailFragmentArgs.fromBundle(bundle)
+            taskListViewModel.getList(args.listId.toInt())
         }
 
-        activity?.let {
-//            todoListRecyclerView = view.findViewById(R.id.task_detail_recycler_view)
-//            todoListRecyclerView.layoutManager = LinearLayoutManager(it)
-//            it.toolbar?.title = taskList.name
-//            todoListRecyclerView.adapter =
-//                TaskAdapter(taskList)
-//            task_fab.setOnClickListener {
-//                    view ->
-//                showAddTaskDialog(view)
-//            }
-        }
+        taskListViewModel.currentTaskList.observe(viewLifecycleOwner, Observer {taskList ->
+            activity?.let {
+                it.toolbar.title =  taskList?.title
+
+            }
+        })
+
+
 
     }
 

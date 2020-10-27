@@ -10,11 +10,23 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <TextView
-        android:layout_marginLeft="16dp"
-        android:id="@+id/list_item_title"
-        android:textColor="@color/primaryDarkColor"
-        android:textSize="16dp"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginLeft="16dp"
+            android:id="@+id/task_list_title"
+            android:textColor="@color/primaryColor"
+            android:textSize="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_marginLeft="16dp"
+            android:id="@+id/task_list_description"
+            android:textColor="@color/primaryLightColor"
+            android:textSize="14dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 </LinearLayout>

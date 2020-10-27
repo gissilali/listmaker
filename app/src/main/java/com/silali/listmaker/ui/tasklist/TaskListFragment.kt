@@ -80,7 +80,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener,
     }
 
     private fun showTaskListItems(list: TaskList) {
-        val action = TaskListFragmentDirections.actionTaskListFragmentToDetailFragment(list.title)
+        val action = TaskListFragmentDirections.actionTaskListFragmentToDetailFragment(list.id.toString())
         findNavController().navigate(action)
     }
 
@@ -92,10 +92,9 @@ class TaskListFragment : Fragment(), TaskListAdapter.TodoListClickListener,
             Snackbar.make(currentView, "Need that list name.", Snackbar.LENGTH_SHORT).show()
             dialog.dismiss()
         } else {
-            val list = com.silali.listmaker.data.model.TaskList(0, taskTitle, descriptionInput.text.toString(), ArrayList(), null, null)
+            val list = TaskList(0, taskTitle, descriptionInput.text.toString(), ArrayList(), null, null)
             taskListViewModel.add(list)
             dialog.dismiss()
-//        }
         }
     }
 }

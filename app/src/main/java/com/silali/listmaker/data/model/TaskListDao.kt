@@ -19,4 +19,7 @@ interface TaskListDao {
 
     @Query("SELECT * FROM task_lists_table")
     fun getAllTasksLists() : LiveData<List<TaskList>>
+
+    @Query("SELECT * FROM task_lists_table WHERE id = :id LIMIT 1")
+    fun getTaskList(id: Int)  : LiveData<TaskList>
 }

@@ -1,17 +1,22 @@
 package com.silali.listmaker.ui.tasklist
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment
 import com.silali.listmaker.R
+import com.silali.listmaker.databinding.RowAddItemBinding
 
 
 class ItemInputBottomSheetDialog(private val clickListener: BottomSheetDialogClickListener) : RoundedBottomSheetDialogFragment() {
+    private var binding: RowAddItemBinding? = null
 
     interface BottomSheetDialogClickListener {
         fun submitForm(taskName: View, dialog: ItemInputBottomSheetDialog)
@@ -29,16 +34,25 @@ class ItemInputBottomSheetDialog(private val clickListener: BottomSheetDialogCli
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.row_add_item, container, false)
-        val saveButton = view.findViewById<Button>(R.id.save_btn)
-        saveButton.setOnClickListener {
-            clickListener.submitForm(view, this)
+        binding = DataBindingUtil.inflate(
+            LayoutInflater.from(context),
+            R.layout.row_add_item, null, false
+        )
+
+        val saveButton = binding?.saveBtn
+
+        binding?.taskListViewModel?.listTitle?.observe(this, Observer {
+            saveButton?.isEnabled = it.isNotEmpty()
+        })
+
+        saveButton?.setOnClickListener {
+            clickListener.submitForm(binding!!.root, this)
         }
 
         dialog?.let {
             it.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         }
 
-        return view
+        return binding!!.root
     }
 }

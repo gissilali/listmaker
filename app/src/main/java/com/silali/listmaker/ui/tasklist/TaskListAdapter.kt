@@ -23,7 +23,7 @@ class TaskListAdapter(private val todoLists: List<TaskList>, private val clickLi
 
     override fun onBindViewHolder(holder: TaskListViewHolder, position: Int) {
         val currentListItem = todoLists[position]
-        holder.bind(currentListItem.title)
+        holder.bind(currentListItem)
         holder.itemView.setOnClickListener {
             clickListener.itemClicked(currentListItem)
         }

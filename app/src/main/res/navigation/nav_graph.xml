@@ -17,7 +17,7 @@
         android:name="com.silali.listmaker.ui.tasklist.DetailFragment"
         android:label="DetailFragment" >
         <argument
-            android:name="list_string"
+            android:name="list_id"
             app:argType="string" />
     </fragment>
 </navigation>

@@ -1,5 +1,6 @@
 package com.silali.listmaker.data.repository
 
+import androidx.lifecycle.LiveData
 import com.silali.listmaker.data.model.TaskList
 import com.silali.listmaker.data.model.TaskListDao
 
@@ -12,5 +13,9 @@ class TaskListRepository(private val dao: TaskListDao) {
 
     suspend fun updateTaskList(taskList: TaskList) {
         dao.updateTaskList(taskList)
+    }
+
+    fun getTaskList(listId: Int): LiveData<TaskList> {
+        return dao.getTaskList(listId)
     }
 }
